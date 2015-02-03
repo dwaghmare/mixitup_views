@@ -1,0 +1,14 @@
+/**
+ * @file
+ * Css for mixitup_views.
+ */
+
+.mix_item.mix {
+  display: none;
+}
+
+.filters_wrapper .form-type-checkboxes {
+  display: inline-block;
+  margin-right: 20px;
+  vertical-align: top;
+}

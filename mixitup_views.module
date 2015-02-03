@@ -1,0 +1,294 @@
+<?php
+
+/**
+ * @file
+ * Provides a Views plugin for displaying content in a Mixitup layout.
+ */
+
+/**
+ * Implements hook_libraries_info().
+ */
+function mixitup_views_libraries_info() {
+  $libraries['mixitup'] = array(
+    'name' => 'MixItUp',
+    'vendor url' => 'https://mixitup.kunkalabs.com/',
+    'download url' => 'https://mixitup.kunkalabs.com/',
+    'version arguments' => array(
+      'file' => 'jquery.mixitup.min.js',
+      'pattern' => '/MixItUp\s+v?([0-9\.]+)/',
+      'lines' => 2,
+      'cols' => 30,
+    ),
+    'files' => array(
+      'js' => array(
+        'jquery.mixitup.min.js',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Check if the Mixitup library is installed.
+ *
+ * @return
+ *   A boolean indicating the installed status.
+ */
+function mixitup_views_installed() {
+  if (($library = libraries_detect('mixitup')) && !empty($library['installed'])) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Check if the Mixitup library has been loaded.
+ *
+ * @return
+ *   A boolean indicating the loaded status.
+ */
+function mixitup_views_loaded() {
+  if (($library = libraries_load('mixitup')) && !empty($library['loaded'])) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function mixitup_views_views_api() {
+  return array('api' => 3);
+}
+
+/**
+ * Preprocess function for views_view_mixitup.tpl.php.
+ */
+function template_preprocess_views_view_mixitup(&$vars) {
+  // Run preprocess function for unformatted style.
+  template_preprocess_views_view_unformatted($vars);
+
+  // Get view options.
+  $view = $vars['view'];
+  $options = $vars['options'];
+
+  // Populates result array with tids info.
+  foreach ($vars['view']->result as $id => $result) {
+    $vars['view']->result[$id]->classes = mixitup_views_get_rows_classes($result->nid);
+  }
+  $filters = drupal_get_form('mixitup_views_filters_form');
+  $vars['filters'] = drupal_render($filters);
+
+  // Display content in a Mixitup layout.
+  $container = '.view-' . drupal_clean_css_identifier($view->name) . '.view-display-id-' . $view->current_display . ' .view-content';
+
+  mixitup_views_apply($container, $options);
+}
+
+/**
+ * Get default option for mixitup js.
+ * 
+ * @return array
+ */
+function mixitup_views_default_options($convert = FALSE) {
+  $options = array(
+    'selectors' => array(
+      'target' => '.mix',
+      'filter' => '.filter',
+      'sort' => '.sort',
+    ),
+    'load' => array(
+      'filter' => 'all',
+      'sort' => 'default:asc',
+    ),
+    'animation' => array(
+      'enable' => TRUE,
+      'effects' => 'fade scale',
+      'duration' => 600,
+      'easing' => 'ease',
+      'perspectiveDistance' => '3000px',
+      'perspectiveOrigin' => '50% 50%',
+      'queue' => TRUE,
+      'queueLimit' => 1,
+    ),
+  );
+  
+  // Allow other modules to alter the default options.
+  drupal_alter('mixitup_views_default_options', $options);
+  
+  if ($convert) {
+    $options = _mixitup_views_convert_from_mixitup_options($options);
+  }
+
+  return $options;
+}
+
+/**
+ * Convert mixitup options array to needed.
+ * 
+ * @param array $mixitup_options
+ *   Options array in mixitup js style.
+ * 
+ * @return array
+ */
+function _mixitup_views_convert_from_mixitup_options(array $mixitup_options) {
+  $converted_options = array();
+  foreach ($mixitup_options as $cat => $options) {
+    foreach ($options as $option => $default_value) {
+      $converted_options[$cat . '_' . $option] = $default_value;
+    }
+  }
+  
+  return $converted_options;
+}
+
+/**
+ * Apply mixitup library to container.
+ * 
+ * @param string $container
+ * @param array $options
+ */
+function mixitup_views_apply($container, $options = array()) {
+  if (mixitup_views_loaded() && !empty($container)) {
+    // For any options not specified, use default options.
+    $options += mixitup_views_default_options(TRUE);
+    // Set of mixitup settings.
+    $mixitup_settings = array(
+      'mixitup' => array(
+        $container => array(
+          'selectors' => array(
+            'target' => $options['selectors_target'],
+            'filter' => $options['selectors_filter'],
+            'sort' => $options['selectors_sort'],
+          ),
+          'load' => array(
+            'filter' => $options['load_filter'],
+            'sort' => $options['load_sort'],
+          ),
+          'animation' => array(
+            'enable' => (bool) $options['animation_enable'],
+            'effects' => $options['animation_effects'],
+            'duration' => (int) $options['animation_duration'],
+            'easing' => $options['animation_easing'],
+            'perspectiveDistance' => $options['animation_perspectiveDistance'],
+            'perspectiveOrigin' => $options['animation_perspectiveOrigin'],
+            'queue' => (bool) $options['animation_queue'],
+            'queueLimit' => (int) $options['animation_queueLimit'],
+          ),
+        ),
+      ),
+      'filters_form_id' => '#mixitup-views-filters-form',
+      'reset_id' => '#reset',
+    );
+
+    drupal_add_css(drupal_get_path('module', 'mixitup_views') . '/css/mixitup_views.css');
+    $script_file = drupal_get_path('module', 'mixitup_views') . '/js/mixitup_views.js';
+    // Apply the script.
+    drupal_add_js($mixitup_settings, 'setting');
+    drupal_add_js($script_file);
+  }
+}
+
+/**
+ * Get all node taxonomy id.
+ * 
+ * @param int $nid
+ * @return array
+ *   Array of tids.
+ */
+function _mixitup_views_get_node_tids($nid) {
+  $tids = db_select('taxonomy_index', 'ti')
+          ->fields('ti', array('tid', 'nid'))
+          ->condition('ti.nid', $nid)
+          ->execute()->fetchAllKeyed();
+
+  return array_keys($tids);
+}
+
+/**
+ * Get classes string for node.
+ * 
+ * @param int $nid
+ * @return string
+ */
+function mixitup_views_get_rows_classes($nid) {
+  $tids = _mixitup_views_get_node_tids($nid);
+  $classes = array();
+  if (!empty($tids)) {
+    foreach ($tids as $tid) {
+      $classes[] = 'tid_' . $tid;
+      mixitup_views_populate_filters($tid);
+    }
+  }
+
+  $classes = implode(' ', $classes);
+  return $classes;
+}
+
+/**
+ * Populates structured array of used taxonomy terms.
+ * 
+ * @param int $tid
+ * @return array
+ */
+function mixitup_views_populate_filters($tid) {
+  $filters = &drupal_static(__FUNCTION__);
+  $term = taxonomy_term_load($tid);
+  $filters[$term->vid]['.tid_' . $term->tid] = $term->name;
+
+  return $filters;
+}
+
+/**
+ * Filters form.
+ */
+function mixitup_views_filters_form($form, &$form_state) {
+  $filters = &drupal_static('mixitup_views_populate_filters');
+  $form = array();
+  if (isset($filters)) {
+    foreach ($filters as $vid => $terms) {
+      $vocab = taxonomy_vocabulary_load($vid);
+      $form['filter_' . $vid] = array(
+        '#type' => 'checkboxes',
+        '#title' => $vocab->name,
+        '#options' => $terms,
+        '#attributes' => array('class' => array('mixitup_views_filter'), 'vid' => $vid),
+        '#multiple' => TRUE,
+      );
+    }
+    $form['reset'] = array(
+      '#markup' => l(t('Clear Filters'), '', array(
+        'fragment' => 'reset',
+        'external' => TRUE,
+        'attributes' => array('id' => 'reset'))
+      ),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_help().
+ */
+function mixitup_views_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#mixitup_views':
+      $path = dirname(__FILE__) . '/README.txt';
+      if (file_exists($path)) {
+        $readme = file_get_contents($path);
+      }
+
+      if (!isset($readme)) {
+        return NULL;
+      }
+      $output = '<pre>' . $readme . '</pre>';
+
+      return $output;
+  }
+}
