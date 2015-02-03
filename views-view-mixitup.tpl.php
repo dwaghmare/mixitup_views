@@ -10,7 +10,7 @@
 <?php endif; ?>
 
 <?php foreach ($rows as $id => $row): ?>
-  <div class="mix_item mix<?php if ($classes_array[$id]) print ' ' . $classes_array[$id]; ?> <?php print ' ' . $view->result[$id]->classes; ?>">
+  <div class="mix_item mix<?php print ($classes_array[$id]) ? ' ' . $classes_array[$id] : ''; ?> <?php print ' ' . $view->result[$id]->classes; ?>">
     <?php print $row; ?>
   </div>
 <?php endforeach; ?>

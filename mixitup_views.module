@@ -32,7 +32,7 @@ function mixitup_views_libraries_info() {
 /**
  * Check if the Mixitup library is installed.
  *
- * @return
+ * @return bool
  *   A boolean indicating the installed status.
  */
 function mixitup_views_installed() {
@@ -47,7 +47,7 @@ function mixitup_views_installed() {
 /**
  * Check if the Mixitup library has been loaded.
  *
- * @return
+ * @return bool
  *   A boolean indicating the loaded status.
  */
 function mixitup_views_loaded() {
@@ -92,8 +92,9 @@ function template_preprocess_views_view_mixitup(&$vars) {
 
 /**
  * Get default option for mixitup js.
- * 
+ *
  * @return array
+ *   Array of default mixitup params.
  */
 function mixitup_views_default_options($convert = FALSE) {
   $options = array(
@@ -117,10 +118,10 @@ function mixitup_views_default_options($convert = FALSE) {
       'queueLimit' => 1,
     ),
   );
-  
+
   // Allow other modules to alter the default options.
   drupal_alter('mixitup_views_default_options', $options);
-  
+
   if ($convert) {
     $options = _mixitup_views_convert_from_mixitup_options($options);
   }
@@ -130,11 +131,12 @@ function mixitup_views_default_options($convert = FALSE) {
 
 /**
  * Convert mixitup options array to needed.
- * 
+ *
  * @param array $mixitup_options
  *   Options array in mixitup js style.
- * 
+ *
  * @return array
+ *   Converted array of mixitup params.
  */
 function _mixitup_views_convert_from_mixitup_options(array $mixitup_options) {
   $converted_options = array();
@@ -143,15 +145,17 @@ function _mixitup_views_convert_from_mixitup_options(array $mixitup_options) {
       $converted_options[$cat . '_' . $option] = $default_value;
     }
   }
-  
+
   return $converted_options;
 }
 
 /**
  * Apply mixitup library to container.
- * 
+ *
  * @param string $container
+ *   Container name.
  * @param array $options
+ *   Array of mixitup options.
  */
 function mixitup_views_apply($container, $options = array()) {
   if (mixitup_views_loaded() && !empty($container)) {
@@ -196,8 +200,9 @@ function mixitup_views_apply($container, $options = array()) {
 
 /**
  * Get all node taxonomy id.
- * 
+ *
  * @param int $nid
+ *
  * @return array
  *   Array of tids.
  */
@@ -214,7 +219,10 @@ function _mixitup_views_get_node_tids($nid) {
  * Get classes string for node.
  * 
  * @param int $nid
+ *   Node id.
+ *
  * @return string
+ *   Classes string.
  */
 function mixitup_views_get_rows_classes($nid) {
   $tids = _mixitup_views_get_node_tids($nid);
@@ -232,9 +240,12 @@ function mixitup_views_get_rows_classes($nid) {
 
 /**
  * Populates structured array of used taxonomy terms.
- * 
+ *
  * @param int $tid
+ *   Taxonomy id.
+ * 
  * @return array
+ *   Array with filters.
  */
 function mixitup_views_populate_filters($tid) {
   $filters = &drupal_static(__FUNCTION__);

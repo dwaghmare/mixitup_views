@@ -21,8 +21,7 @@ class views_plugin_style_mixitup_views extends views_plugin_style {
         $options[$option]['bool'] = TRUE;
       }
     }
-    
-    
+
     return $options;
   }
 
@@ -31,7 +30,7 @@ class views_plugin_style_mixitup_views extends views_plugin_style {
    */
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
-    
+
     // Add Mixitup options to views form.
     $form['mixitup'] = array(
       '#type' => 'fieldset',
@@ -62,29 +61,25 @@ class views_plugin_style_mixitup_views extends views_plugin_style {
       $form['animation_easing'] = array(
         '#type' => 'textfield',
         '#title' => t('Easing'),
-        '#description' => t('A valid CSS3 transition-timing function or shorthand.'
-            . ' For a full list of accepted values, check out easings.net.'),
+        '#description' => t('For a full list of accepted values, check out easings.net.'),
         '#default_value' => $options['animation_easing'],
       );
       $form['animation_perspectiveDistance'] = array(
         '#type' => 'textfield',
         '#title' => t('perspectiveDistance'),
-        '#description' => t('The perspective value in CSS units applied to the'
-            . ' container during animations, affecting any 3d transform-based effects.'),
+        '#description' => t('The perspective value in CSS units applied to the container during animations.'),
         '#default_value' => $options['animation_perspectiveDistance'],
       );
       $form['animation_perspectiveOrigin'] = array(
         '#type' => 'textfield',
         '#title' => t('perspectiveOrigin'),
-        '#description' => t('The perspective-origin value applied to the container during'
-            . ' animations, affecting any 3d transform based effects.'),
+        '#description' => t('The perspective-origin value applied to the container during animations.'),
         '#default_value' => $options['animation_perspectiveOrigin'],
       );
       $form['animation_queue'] = array(
         '#type' => 'checkbox',
         '#title' => t('Queue'),
-        '#description' => t('Enable queuing for all operations received while an another'
-            . ' operation is in progress.'),
+        '#description' => t('Enable queuing for all operations received while an another operation is in progress.'),
         '#default_value' => $options['animation_queue'],
         '#attributes' => array('class' => array('animation_queue')),
       );
@@ -92,9 +87,9 @@ class views_plugin_style_mixitup_views extends views_plugin_style {
         '#type' => 'textfield',
         '#title' => t('queueLimit'),
         '#description' => t('The maximum number of operations allowed in the queue at any time.'),
-        '#default_value' => $options['animation_queueLimit'],         
+        '#default_value' => $options['animation_queueLimit'],
       );
-       
+
       foreach (mixitup_views_default_options(TRUE) as $option => $default_value) {
         $form[$option]['#fieldset'] = 'mixitup';
         if ($option != 'animation_enable') {
@@ -106,7 +101,7 @@ class views_plugin_style_mixitup_views extends views_plugin_style {
             'visible' => $selectors,
           );
         }
-      }      
+      }
     }
     else {
       // Disable Mixitup.

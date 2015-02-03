@@ -61,7 +61,7 @@
 
       // Loop through each filter group and add active filters to arrays.
       for (var i = 0, group; group = self.groups[i]; i++) {
-        // reset arrays.
+        // Reset arrays.
         group.active = [];
         group.$inputs.each(function () {
           $(this).is(':checked') && group.active.push(this.value);
@@ -71,7 +71,7 @@
 
       self.concatenate();
     },
-    
+
     // The "concatenate" method will crawl through each group, concatenating filters as desired.
     concatenate: function () {
       var self = this;
@@ -86,7 +86,7 @@
 
         return (done < self.groups.length);
       };
-      
+
       crawl = function () {
         for (var i = 0, group; group = self.groups[i]; i++) {
           group.active[group.tracker] && (cache += group.active[group.tracker]);
@@ -98,7 +98,7 @@
           }
         }
       };
-      
+
       updateTrackers = function () {
         for (var i = self.groups.length - 1; i > -1; i--) {
           var group = self.groups[i];
