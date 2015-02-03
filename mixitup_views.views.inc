@@ -16,6 +16,7 @@ function mixitup_views_views_plugins() {
         'uses options' => TRUE,
         'help' => t("Display content with MixItUp."),
         'theme' => 'views_view_mixitup',
+        'base' => array('node'),
         'type' => 'normal',
         'uses row plugin' => TRUE,
         'uses row class' => TRUE,
