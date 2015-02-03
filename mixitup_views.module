@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Provides a Views plugin for displaying content in a Mixitup layout.
+ * Provides a Views style plugin for displaying content with Mixitup filtering.
  */
 
 /**
@@ -202,6 +202,7 @@ function mixitup_views_apply($container, $options = array()) {
  * Get all node taxonomy id.
  *
  * @param int $nid
+ *   Node id.
  *
  * @return array
  *   Array of tids.
@@ -217,7 +218,7 @@ function _mixitup_views_get_node_tids($nid) {
 
 /**
  * Get classes string for node.
- * 
+ *
  * @param int $nid
  *   Node id.
  *
@@ -243,7 +244,7 @@ function mixitup_views_get_rows_classes($nid) {
  *
  * @param int $tid
  *   Taxonomy id.
- * 
+ *
  * @return array
  *   Array with filters.
  */
