@@ -102,6 +102,37 @@ class views_plugin_style_mixitup_views extends views_plugin_style {
           );
         }
       }
+      $form['mixitup_vocab'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('MixItUp Vocabulary settings'),
+      );
+      $form['restrict_vocab'] = array(
+        '#type' => 'checkbox',
+        '#fieldset' => 'mixitup_vocab',
+        '#title' => t('Restrict terms to particular vocabulary.'),
+        '#default_value' => $options['restrict_vocab'],
+        '#attributes' => array(
+          'class' => array('restrict_vocab_enable'),
+        ),
+      );
+      $all_vocabs = taxonomy_vocabulary_load_multiple(FALSE);
+      $vocabulary_options = array();
+      foreach ($all_vocabs as $key_vid => $vocab) {
+        $vocabulary_options[$key_vid] = $vocab->name;
+      }
+      $form['restrict_vocab_ids'] = array(
+        '#type' => 'checkboxes',
+        '#fieldset' => 'mixitup_vocab',
+        '#title' => t('Select vocabularies'),
+        '#multiple' => TRUE,
+        '#options' => $vocabulary_options,
+        '#default_value' => $options['restrict_vocab_ids'],
+        '#states' => array (
+          'visible' => array (
+            '.restrict_vocab_enable' => array('checked' => TRUE),
+          ),
+        ),
+      );
     }
     else {
       // Disable Mixitup.

@@ -81,7 +81,7 @@ function template_preprocess_views_view_mixitup(&$vars) {
   foreach ($vars['view']->result as $id => $result) {
     $vars['view']->result[$id]->classes = mixitup_views_get_rows_classes($result->nid);
   }
-  $filters = drupal_get_form('mixitup_views_filters_form');
+  $filters = drupal_get_form('mixitup_views_filters_form', $options);
   $vars['filters'] = drupal_render($filters);
 
   // Display content in a Mixitup layout.
@@ -116,6 +116,10 @@ function mixitup_views_default_options($convert = FALSE) {
       'perspectiveOrigin' => '50% 50%',
       'queue' => TRUE,
       'queueLimit' => 1,
+    ),
+    'restrict' => array(
+      'vocab' => FALSE,
+      'vocab_ids' => array(),
     ),
   );
 
@@ -259,12 +263,15 @@ function mixitup_views_populate_filters($tid) {
 /**
  * Filters form.
  */
-function mixitup_views_filters_form($form, &$form_state) {
+function mixitup_views_filters_form($form, &$form_state, $options) {
   $filters = &drupal_static('mixitup_views_populate_filters');
   $form = array();
   if (isset($filters)) {
     foreach ($filters as $vid => $terms) {
       $vocab = taxonomy_vocabulary_load($vid);
+      if($options['restrict_vocab'] == 1 && (!isset($options['restrict_vocab_ids'][$vocab->vid]) || $options['restrict_vocab_ids'][$vocab->vid] == 0)) {
+        continue;
+      }
       $form['filter_' . $vid] = array(
         '#type' => 'checkboxes',
         '#title' => $vocab->name,
