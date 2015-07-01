@@ -23,6 +23,13 @@ html.js .filters_wrapper .form-type-checkboxes {
 
 html.js .filters_wrapper #reset {
   display: none;
+  margin-right: 20px;
+}
+
+html.js .sort_wrapper {
+  display: inline-block;
+  vertical-align: top;
+  float: right;
 }
 
 html.js .sort_wrapper .sort {
