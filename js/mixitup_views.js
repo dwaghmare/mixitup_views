@@ -13,6 +13,23 @@
         var $reset = $(Drupal.settings.reset_id);
         checkboxFilter.init($filters, $reset, $container);
         $container.mixItUp(settings);
+        // Sorting functionality.
+        $('.sort', $container).on('click', function () {
+          data_sort = $(this).attr('data-sort');
+          if ($(this).hasClass('asc')) {
+            // Refresh all other sorts.
+            $('.sort_item', $container).removeClass('desc').addClass('asc');
+            $container.mixItUp('sort', data_sort + ':asc');
+            $(this).removeClass('asc').addClass('desc');
+          }
+          else {
+            if ($(this).hasClass('desc')) {
+              $container.mixItUp('sort', data_sort + ':desc');
+              $(this).removeClass('desc').addClass('asc');
+            }
+          }
+        });
+
       });
     }
   };
@@ -53,6 +70,7 @@
         e.preventDefault();
         self.$filters[0].reset();
         self.parseFilters();
+
       });
     },
     // The parseFilters method checks which filters are active in each group.
@@ -60,6 +78,7 @@
       var self = this;
 
       // Loop through each filter group and add active filters to arrays.
+      var filters = false;
       for (var i = 0, group; group = self.groups[i]; i++) {
         // Reset arrays.
         group.active = [];
@@ -67,11 +86,19 @@
           $(this).is(':checked') && group.active.push(this.value);
         });
         group.active.length && (group.tracker = 0);
+        if (group.active.length) {
+          filters = true;
+        }
+      }
+      if (filters) {
+        self.$reset.show();
+      }
+      else {
+        self.$reset.hide();
       }
 
       self.concatenate();
     },
-
     // The "concatenate" method will crawl through each group, concatenating filters as desired.
     concatenate: function () {
       var self = this;
@@ -125,7 +152,6 @@
 
       // If the output string is empty, show all rather than none.
       !self.outputString.length && (self.outputString = 'all');
-
       // Send the output string to MixItUp via the 'filter' method.
       if (self.$container.mixItUp('isLoaded')) {
         self.$container.mixItUp('filter', self.outputString);

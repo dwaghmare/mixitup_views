@@ -20,3 +20,18 @@ html.js .filters_wrapper .form-type-checkboxes {
   margin-right: 20px;
   vertical-align: top;
 }
+
+html.js .filters_wrapper #reset {
+  display: none;
+}
+
+html.js .sort_wrapper .sort {
+  cursor: pointer;
+}
+
+html.js .sort_wrapper .sort.asc:after {
+  content: "⬆";
+}
+html.js .sort_wrapper .sort.desc:after {
+  content: "⬇";
+}

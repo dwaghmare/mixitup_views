@@ -33,7 +33,12 @@ CONFIGURATION:
 3. Go to MixItUp format settings and change default animation settings to your
    own settings, if needed. All animation settings available here:
    https://mixitup.kunkalabs.com/docs/#group-animation
-4. Select "Display all items" at Pager section for making all items available.
+4. If you want enable sorting, You should enable "Use sorting" under
+   "MixItUp Sorting settings". Don't forget to type labels there.
+5. If you want to restrict vocabularies, You can do it under "MixItUp Vocabulary
+   settings"
+6. Select "Display all items" at Pager section for making all items available.
+7. And you can customize all styles for your needs.
 
 
 Author:

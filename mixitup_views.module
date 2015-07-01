@@ -67,6 +67,18 @@ function mixitup_views_views_api() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function mixitup_views_theme($existing, $type, $theme, $path) {
+  return array(
+    'mixitup_views_sorting' => array(
+      'template' => 'templates/mixitup_views_sorting',
+      'arguments' => array('sorts' => NULL),
+    ),
+  );
+}
+
+/**
  * Preprocess function for views_view_mixitup.tpl.php.
  */
 function template_preprocess_views_view_mixitup(&$vars) {
@@ -76,10 +88,31 @@ function template_preprocess_views_view_mixitup(&$vars) {
   // Get view options.
   $view = $vars['view'];
   $options = $vars['options'];
-
+  if (isset($options['use_sort']) && $options['use_sort'] == 1 && isset($options['sorts'])) {
+    $sort_keys = array();
+    foreach ($options['sorts'] as $sort_item => $label) {
+      if (empty($label)) {
+        unset($options['sorts'][$sort_item]);
+        continue;
+      }
+      $sort_keys[$sort_item] = $label;
+    }
+  }
+  if (is_array($vars['view']->result)) {
+    mixitup_views_set_nodes_count(count($vars['view']->result));
+  }
   // Populates result array with tids info.
   foreach ($vars['view']->result as $id => $result) {
     $vars['view']->result[$id]->classes = mixitup_views_get_rows_classes($result->nid);
+    if (!empty($sort_keys)) {
+      $sorts = array();
+      foreach ($result as $id_field => $val) {
+        if (isset($sort_keys[$id_field])) {
+          $sorts[] = 'data-' . $id_field . '="' . $val . '"';
+        }
+      }
+      $vars['view']->result[$id]->sorts = implode(' ', $sorts);
+    }
   }
   $filters = drupal_get_form('mixitup_views_filters_form', $options);
   $vars['filters'] = drupal_render($filters);
@@ -235,7 +268,7 @@ function mixitup_views_get_rows_classes($nid) {
   if (!empty($tids)) {
     foreach ($tids as $tid) {
       $classes[] = 'tid_' . $tid;
-      mixitup_views_populate_filters($tid);
+      mixitup_views_populate_filters($tid, $nid);
     }
   }
 
@@ -248,16 +281,80 @@ function mixitup_views_get_rows_classes($nid) {
  *
  * @param int $tid
  *   Taxonomy id.
+ * @param int $nid
+ *   Node id.
  *
  * @return array
  *   Array with filters.
  */
-function mixitup_views_populate_filters($tid) {
+function mixitup_views_populate_filters($tid, $nid) {
   $filters = &drupal_static(__FUNCTION__);
   $term = taxonomy_term_load($tid);
   $filters[$term->vid]['.tid_' . $term->tid] = $term->name;
+  mixitup_views_populate_node_filters($nid, $tid);
 
   return $filters;
+}
+
+/**
+ * Collects info regarding wich nodes has a specific tid.
+ *
+ * @param int $nid
+ *   Node id.
+ * @param int $tid
+ *   Taxonomy id.
+ *
+ * @return array
+ *   Array with tid => array(nids).
+ */
+function mixitup_views_populate_node_filters($nid, $tid) {
+  $node_filters = &drupal_static(__FUNCTION__);
+  $node_filters[$tid][] = $nid;
+
+  return $node_filters;
+}
+
+/**
+ * Set nodes count for mixitup views.
+ *
+ * @param int $count
+ *   Number of nodes.
+ *
+ * @return int $nodes_count
+ *   Nodes count.
+ */
+function mixitup_views_set_nodes_count($count) {
+  $nodes_count = &drupal_static(__FUNCTION__);
+  $nodes_count = $count;
+
+  return $nodes_count;
+}
+
+/**
+ * Unset unneeded terms.
+ *
+ * If all records share same terms (One or more). In that case it
+ * doesn't make sense to show all terms.
+ *
+ * @param array $terms
+ *   Terms array.
+ *
+ * @return array $terms
+ *   Filtered array of terms.
+ */
+function mixitup_views_filter_terms(array $terms) {
+  $node_filters = &drupal_static('mixitup_views_populate_node_filters');
+  $nodes_count = &drupal_static('mixitup_views_set_nodes_count');
+
+  if ($node_filters) {
+    foreach ($node_filters as $tid => $nids) {
+      if (count($nids) == $nodes_count) {
+        unset($terms['.tid_' . $tid]);
+      }
+    }
+  }
+
+  return $terms;
 }
 
 /**
@@ -268,10 +365,19 @@ function mixitup_views_filters_form($form, &$form_state, $options) {
   $form = array();
   if (isset($filters)) {
     foreach ($filters as $vid => $terms) {
-      $vocab = taxonomy_vocabulary_load($vid);
-      if($options['restrict_vocab'] == 1 && (!isset($options['restrict_vocab_ids'][$vocab->vid]) || $options['restrict_vocab_ids'][$vocab->vid] == 0)) {
+      // Show only selected vocabularies.
+      if ($options['restrict_vocab'] == 1 && (!isset($options['restrict_vocab_ids'][$vid]) || $options['restrict_vocab_ids'][$vid] == 0)) {
+        unset($filters[$vid]);
         continue;
       }
+      // If all nodes have just one term tagged, it doesn't make sense
+      // to show a term and clear filters link.
+      if (count($terms) < 2) {
+        unset($filters[$vid]);
+        continue;
+      }
+      $vocab = taxonomy_vocabulary_load($vid);
+      $terms = mixitup_views_filter_terms($terms);
       $form['filter_' . $vid] = array(
         '#type' => 'checkboxes',
         '#title' => $vocab->name,
@@ -280,12 +386,19 @@ function mixitup_views_filters_form($form, &$form_state, $options) {
         '#multiple' => TRUE,
       );
     }
-    $form['reset'] = array(
-      '#markup' => l(t('Clear Filters'), '', array(
-        'fragment' => 'reset',
-        'external' => TRUE,
-        'attributes' => array('id' => 'reset'))
-      ),
+    if ($filters) {
+      $form['reset'] = array(
+        '#markup' => l(t('Clear Filters'), '', array(
+          'fragment' => 'reset',
+          'external' => TRUE,
+          'attributes' => array('id' => 'reset'),
+        )),
+      );
+    }
+  }
+  if (isset($options['use_sort']) && $options['use_sort'] == 1 && isset($options['sorts'])) {
+    $form['sort'] = array(
+      '#markup' => theme('mixitup_views_sorting', array('sorts' => $options['sorts'])),
     );
   }
 

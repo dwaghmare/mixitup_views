@@ -1,5 +1,5 @@
 name = Mixitup Views
-description = Creates Mixitup filtering style plugin for Views  
+description = Creates Mixitup filtering style plugin for Views
 core = 7.x
 
 files[] = views_plugin_style_mixitup_views.inc
