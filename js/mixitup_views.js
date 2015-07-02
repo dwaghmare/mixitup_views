@@ -16,9 +16,11 @@
         // Sorting functionality.
         $('.sort', $container).on('click', function () {
           data_sort = $(this).attr('data-sort');
-          if ($(this).hasClass('asc')) {
-            // Refresh all other sorts.
+          if (!$(this).hasClass('desc')) {
+            // Refresh all other sorts).
             $('.sort_item', $container).removeClass('desc').addClass('asc');
+          }
+          if ($(this).hasClass('asc')) {
             $container.mixItUp('sort', data_sort + ':asc');
             $(this).removeClass('asc').addClass('desc');
           }
