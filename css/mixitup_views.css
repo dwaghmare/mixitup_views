@@ -15,9 +15,9 @@ html.js .filters_wrapper {
   display: block;
 }
 
-html.js .filters_wrapper .form-type-checkboxes {
+html.js .filters_wrapper .form-type-checkbox {
   display: inline-block;
-  margin-right: 20px;
+  margin-right: 5px;
   vertical-align: top;
 }
 
@@ -27,13 +27,14 @@ html.js .filters_wrapper #reset {
 }
 
 html.js .sort_wrapper {
-  display: inline-block;
+  display: block;
   vertical-align: top;
-  float: right;
 }
 
 html.js .sort_wrapper .sort {
   cursor: pointer;
+  display: inline-block;
+  margin-right: 5px;
 }
 
 html.js .sort_wrapper .sort.asc:after {
