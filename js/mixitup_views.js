@@ -3,19 +3,21 @@
  * Mixitup views script.
  */
 
-(function ($) {
+(function ($, Drupal, drupalSettings, storage) {
+
+  "use strict";
 
   Drupal.behaviors.mixitup_views = {
     attach: function (context, settings) {
-      $.each(Drupal.settings.mixitup, function (container, settings) {
+      $.each(drupalSettings.mixitup, function (container, settings) {
         var $container = $(container);
-        var $filters = $(Drupal.settings.filters_form_id);
-        var $reset = $(Drupal.settings.reset_id);
+        var $filters = $(drupalSettings.filters_form_id);
+        var $reset = $(drupalSettings.reset_id);
         checkboxFilter.init($filters, $reset, $container);
         $container.mixItUp(settings);
         // Sorting functionality.
         $('.sort', $container).on('click', function () {
-          data_sort = $(this).attr('data-sort');
+          var data_sort = $(this).attr('data-sort');
           if (!$(this).hasClass('desc')) {
             // Refresh all other sorts).
             $('.sort_item', $container).removeClass('desc').addClass('asc');
@@ -50,7 +52,7 @@
       self.$reset = reset;
       self.$container = container;
 
-      self.$filters.find('.form-type-checkboxes').each(function () {
+      self.$filters.find('.form-type-checkbox').each(function () {
         self.groups.push({
           $inputs: $(this).find('input'),
           active: [],
@@ -104,9 +106,9 @@
     // The "concatenate" method will crawl through each group, concatenating filters as desired.
     concatenate: function () {
       var self = this;
-      cache = '';
-      crawled = false;
-      checkTrackers = function () {
+      var cache = '';
+      var crawled = false;
+      var checkTrackers = function () {
         var done = 0;
 
         for (var i = 0, group; group = self.groups[i]; i++) {
@@ -116,7 +118,7 @@
         return (done < self.groups.length);
       };
 
-      crawl = function () {
+      var crawl = function () {
         for (var i = 0, group; group = self.groups[i]; i++) {
           group.active[group.tracker] && (cache += group.active[group.tracker]);
 
@@ -128,7 +130,7 @@
         }
       };
 
-      updateTrackers = function () {
+      var updateTrackers = function () {
         for (var i = self.groups.length - 1; i > -1; i--) {
           var group = self.groups[i];
 
@@ -160,4 +162,4 @@
       }
     }
   };
-})(jQuery);
+})(jQuery, Drupal, drupalSettings, window.localStorage);

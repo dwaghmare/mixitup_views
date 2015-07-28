@@ -4,14 +4,8 @@
 
 DESCRIPTION:
 ------------
-This module implements ability to use MixItUp filtering for Views.
+This module implements ability to use MixItUp filtering and sorting for Views.
 Plugin page: https://mixitup.kunkalabs.com
-
-REQUIRED MODULES:
------------------
-https://www.drupal.org/project/libraries
-https://www.drupal.org/project/jquery_update
-https://www.drupal.org/project/views
 
 JQUERY COMPATIBILITY:
 ---------------------
@@ -19,12 +13,11 @@ MixItUp plugin requires jQuery v1.7 or greater.
 
 INSTALLATION:
 -------------
-1. Download and enable all required modules listed above
-2. Download MixItUp plugin jquery.mixitup.min.js to your
-   libraries directory. So, file should be available under
-   /sites/.../libraries/mixitup/jquery.mixitup.min.js.
-   For now, used MixItUp v2.1.7.
-3. Download and enable MixItUp Views module.
+1. Download MixItUp Views module.
+2. Download MixItUp plugin jquery.mixitup.min.js from
+   https://mixitup.kunkalabs.com/ to mixitup_views/js directory.
+3. Enable MixItUp Views module.
+   That's it :)
 
 CONFIGURATION:
 --------------
