@@ -225,6 +225,7 @@ function mixitup_views_apply($container, $options = array()) {
       ),
       'filters_form_id' => '#mixitup-views-filters-form',
       'reset_id' => '#reset',
+      'filtering_type' => isset($options['filter_type']) ? $options['filter_type'] : 'checkboxes',
     );
 
     drupal_add_css(drupal_get_path('module', 'mixitup_views') . '/css/mixitup_views.css');
@@ -378,13 +379,29 @@ function mixitup_views_filters_form($form, &$form_state, $options) {
       }
       $vocab = taxonomy_vocabulary_load($vid);
       $terms = mixitup_views_filter_terms($terms);
-      $form['filter_' . $vid] = array(
-        '#type' => 'checkboxes',
-        '#title' => $vocab->name,
-        '#options' => $terms,
-        '#attributes' => array('class' => array('mixitup_views_filter'), 'vid' => $vid),
-        '#multiple' => TRUE,
-      );
+      if (isset($options['filter_type'])) {
+        switch ($options['filter_type']) {
+          case 'checkboxes':
+            $form['filter_' . $vid] = array(
+              '#type' => 'checkboxes',
+              '#title' => $vocab->name,
+              '#options' => $terms,
+              '#attributes' => array('class' => array('mixitup_views_filter'), 'vid' => $vid),
+              '#multiple' => TRUE,
+            );
+            break;
+
+          case 'select':
+            $form['filter_' . $vid] = array(
+              '#type' => 'select',
+              '#title' => $vocab->name,
+              '#options' => array('' => t('All')) + $terms,
+              '#attributes' => array('class' => array('mixitup_views_filter'), 'vid' => $vid),
+              '#multiple' => FALSE,
+            );
+            break;
+        }
+      }
     }
     if ($filters) {
       $form['reset'] = array(

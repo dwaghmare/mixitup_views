@@ -43,3 +43,8 @@ html.js .sort_wrapper .sort.asc:after {
 html.js .sort_wrapper .sort.desc:after {
   content: "⬇";
 }
+
+html.js .filters_wrapper .form-type-select {
+  display: inline-block;
+  margin-right: 10px;
+}

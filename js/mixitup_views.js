@@ -11,7 +11,8 @@
         var $container = $(container);
         var $filters = $(Drupal.settings.filters_form_id);
         var $reset = $(Drupal.settings.reset_id);
-        checkboxFilter.init($filters, $reset, $container);
+        var $filtering_type = Drupal.settings.filtering_type;
+        makeFilter.init($filters, $reset, $container, $filtering_type);
         $container.mixItUp(settings);
         // Sorting functionality.
         $('.sort', $container).on('click', function () {
@@ -36,27 +37,39 @@
     }
   };
 
-  var checkboxFilter = {
+  var makeFilter = {
     // Declare any variables we will need as properties of the object.
     $filters: null,
     $reset: null,
     groups: [],
     outputArray: [],
     outputString: '',
-    init: function (filters, reset, container) {
+    filterType: '',
+    init: function (filters, reset, container, filterType) {
       var self = this;
 
       self.$filters = filters;
       self.$reset = reset;
       self.$container = container;
-
-      self.$filters.find('.form-type-checkboxes').each(function () {
-        self.groups.push({
-          $inputs: $(this).find('input'),
-          active: [],
-          tracker: false
+      self.filterType = filterType;
+      if (self.filterType == 'checkboxes') {
+        self.$filters.find('.form-type-checkboxes').each(function () {
+          self.groups.push({
+            $inputs: $(this).find('input'),
+            active: [],
+            tracker: false
+          });
         });
-      });
+      }
+      if (self.filterType == 'select') {
+        self.$filters.find('.form-type-select').each(function () {
+          self.groups.push({
+            $selects: $(this).find('select'),
+            active: [],
+            tracker: false
+          });
+        });
+      }
 
       self.bindHandlers();
     },
@@ -84,15 +97,23 @@
       for (var i = 0, group; group = self.groups[i]; i++) {
         // Reset arrays.
         group.active = [];
-        group.$inputs.each(function () {
-          $(this).is(':checked') && group.active.push(this.value);
-        });
+        if (self.filterType == 'checkboxes') {
+          group.$inputs.each(function () {
+            $(this).is(':checked') && group.active.push(this.value);
+          });
+        }
+        if (self.filterType == 'select') {
+          group.$selects.each(function () {
+            group.active.push(this.value);
+          });
+        }
+
         group.active.length && (group.tracker = 0);
         if (group.active.length) {
           filters = true;
         }
       }
-      if (filters) {
+      if (filters && self.filterType == 'checkboxes') {
         self.$reset.show();
       }
       else {
@@ -151,7 +172,6 @@
       while (!crawled && checkTrackers());
 
       self.outputString = self.outputArray.join();
-
       // If the output string is empty, show all rather than none.
       !self.outputString.length && (self.outputString = 'all');
       // Send the output string to MixItUp via the 'filter' method.
@@ -160,4 +180,5 @@
       }
     }
   };
+
 })(jQuery);

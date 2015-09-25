@@ -37,6 +37,16 @@ class views_plugin_style_mixitup_views extends views_plugin_style {
     );
     if (mixitup_views_installed()) {
       $options = $this->options;
+      $form['filter_type'] = array(
+        '#type' => 'select',
+        '#title' => t('Type of filtering'),
+        '#options' => array(
+          'checkboxes' => t('Checkboxes'),
+          'select' => t('Selectboxes')
+        ),
+        '#default_value' => $options['filter_type'],
+        '#description' => t('Select needed field type for filtering'),
+      );
       $form['animation_enable'] = array(
         '#type' => 'checkbox',
         '#title' => t('Enable Animation'),
