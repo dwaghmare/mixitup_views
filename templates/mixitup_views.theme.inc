@@ -33,8 +33,8 @@ function template_preprocess_mixitup_views_view_mixitup(&$variables) {
     $style = $view->style_plugin;
     $options = $style->options;
     // Pulls sorts data.
+    $sort_keys = array();
     if (isset($options['use_sort']) && $options['use_sort'] == 1 && isset($options['sorts'])) {
-      $sort_keys = array();
       foreach ($options['sorts'] as $sort_item => $label) {
         if (empty($label)) {
           unset($options['sorts'][$sort_item]);
@@ -45,7 +45,15 @@ function template_preprocess_mixitup_views_view_mixitup(&$variables) {
     }
     $mixitup_func_service = \Drupal::service('mixitup_views.func_service');
     foreach ($results as $id => $result) {
-      $classes = $mixitup_func_service->getRowClasses($result->nid);
+      if (property_exists($result, 'nid')) {
+        $classes = $mixitup_func_service->getRowClasses($result->nid);
+      }
+      elseif (property_exists($result, 'tid')) {
+        $classes = $mixitup_func_service->getRowClasses($result->tid);
+      }
+      else {
+        $classes = '';
+      }
       $variables['rows'][$id]['attributes']->addClass('mix_item mix');
       $variables['rows'][$id]['attributes']->addClass($classes);
       // Add sort attributes.
@@ -75,6 +83,9 @@ function template_preprocess_mixitup_views_view_mixitup(&$variables) {
  *   Container name.
  * @param array $options
  *   Array of mixitup options.
+ *
+ * @return array
+ *   Returns MixitUp settings array.
  */
 function mixitup_views_get_settings($container, $options = array()) {
   $mixitup_func = \Drupal::service('mixitup_views.func_service');
