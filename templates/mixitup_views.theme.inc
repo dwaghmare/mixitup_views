@@ -6,7 +6,6 @@
  */
 
 use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\String;
 
 /**
  * Prepares variables for view templates.
