@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\mixitup_views\MixitupViewsDefaultOptions.
- */
-
 namespace Drupal\mixitup_views;
 
 /**
@@ -13,6 +8,7 @@ namespace Drupal\mixitup_views;
  * @package Drupal\mixitup_views
  */
 class MixitupViewsDefaultOptionsService {
+
   /**
    * Get default option for mixitup js.
    *
@@ -20,17 +16,17 @@ class MixitupViewsDefaultOptionsService {
    *   Array of default mixitup params.
    */
   public function defaultOptions($convert = FALSE) {
-    $options = array(
-      'selectors' => array(
+    $options = [
+      'selectors' => [
         'target' => '.mix',
         'filter' => '.filter',
         'sort' => '.sort',
-      ),
-      'load' => array(
+      ],
+      'load' => [
         'filter' => 'all',
         'sort' => 'default:asc',
-      ),
-      'animation' => array(
+      ],
+      'animation' => [
         'enable' => TRUE,
         'effects' => 'fade scale',
         'duration' => 600,
@@ -39,12 +35,12 @@ class MixitupViewsDefaultOptionsService {
         'perspectiveOrigin' => '50% 50%',
         'queue' => TRUE,
         'queueLimit' => 1,
-      ),
-      'restrict' => array(
+      ],
+      'restrict' => [
         'vocab' => FALSE,
-        'vocab_ids' => array(),
-      ),
-    );
+        'vocab_ids' => [],
+      ],
+    ];
 
     if ($convert) {
       $options = $this->convertFromMixitupOptions($options);
@@ -62,7 +58,7 @@ class MixitupViewsDefaultOptionsService {
    *   Converted array of mixitup params.
    */
   public function convertFromMixitupOptions(array $mixitup_options) {
-    $converted_options = array();
+    $converted_options = [];
     foreach ($mixitup_options as $cat => $options) {
       foreach ($options as $option => $default_value) {
         $converted_options[$cat . '_' . $option] = $default_value;

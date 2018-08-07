@@ -1,12 +1,8 @@
 <?php
-/**
- * @file
- * Contains Drupal\mixitup_views\MixitupFunc.
- */
 
 namespace Drupal\mixitup_views;
 
-use Drupal\taxonomy\Entity\Term;
+use Drupal\Core\Entity\EntityTypeManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -17,22 +13,41 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class MixitupFunc {
   /**
    * Static array for store active nodes terms.
+   *
+   * @var array
    */
-  protected static $populatedFilters = array();
+  protected static $populatedFilters = [];
   /**
    * Static array for store information about which nodes have a specific tid.
+   *
+   * @var array
    */
-  protected static $nodeFilters = array();
+  protected static $nodeFilters = [];
   /**
    * Default options service.
+   *
+   * @var null
    */
   protected $defaultOptionsService;
 
   /**
-   * Constructor.
+   * EntityTypeManager service.
+   *
+   * @var object
    */
-  public function __construct(MixitupViewsDefaultOptionsService $defaultOptionsService) {
+  protected $entityTypeManager;
+
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\mixitup_views\MixitupViewsDefaultOptionsService $defaultOptionsService
+   *   MixitupViewsDefaultOptionsService service.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManagerService
+   *   EntityTypeManager service.
+   */
+  public function __construct(MixitupViewsDefaultOptionsService $defaultOptionsService, EntityTypeManager $entityTypeManagerService) {
     $this->defaultOptionsService = $defaultOptionsService;
+    $this->entityTypeManager = $entityTypeManagerService;
   }
 
   /**
@@ -40,7 +55,8 @@ class MixitupFunc {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('mixitup_views.default_options_service')
+      $container->get('mixitup_views.default_options_service'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -52,10 +68,13 @@ class MixitupFunc {
    *
    * @return string
    *   Classes string.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function getRowClasses($nid) {
     $tids = $this->getNodeTids($nid);
-    $classes = array();
+    $classes = [];
     if (!empty($tids)) {
       foreach ($tids as $tid) {
         $classes[] = 'tid_' . $tid;
@@ -78,7 +97,7 @@ class MixitupFunc {
    */
   public function getNodeTids($nid) {
     $tids = db_select('taxonomy_index', 'ti')
-      ->fields('ti', array('tid', 'nid'))
+      ->fields('ti', ['tid', 'nid'])
       ->condition('ti.nid', $nid)
       ->execute()->fetchAllKeyed();
 
@@ -92,9 +111,13 @@ class MixitupFunc {
    *   Taxonomy id.
    * @param int $nid
    *   Node id.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function populateFilters($tid, $nid) {
-    $term = Term::load($tid);
+    $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
+    /* @var \Drupal\taxonomy\Entity\Term $term */
     $vid = $term->getVocabularyId();
     self::$populatedFilters[$vid]['.tid_' . $tid] = $term->getName();
     $this->populateNodeFilters($nid, $tid);
@@ -115,7 +138,7 @@ class MixitupFunc {
   /**
    * Gets populated filters.
    *
-   * @return array $populatedFilters
+   * @return array
    *   Array with structure item[vid]['tid_{tid}'] = term_name.
    */
   public function getPopulatedFilters() {
@@ -125,7 +148,7 @@ class MixitupFunc {
   /**
    * Gets populated node filters.
    *
-   * @return array $nodeFilters
+   * @return array
    *   Array with structure item[tid] => array(nids).
    */
   public function getPopulatedNodeFilters() {
@@ -135,11 +158,14 @@ class MixitupFunc {
   /**
    * Get default mixitup options.
    *
+   * @param bool $convert
+   *   Convert check.
+   *
    * @return mixed
    *   Array of default options.
    */
-  public function getDefaultOptions($convert = FALSE) {
-    return $this->defaultOptionsService->defaultOptions($convert);;
+  public function getDefaultOptions($convert = NULL) {
+    return $this->defaultOptionsService->defaultOptions($convert);
   }
 
   /**

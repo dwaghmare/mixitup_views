@@ -20,7 +20,7 @@ use Drupal\Component\Utility\Html;
  *     - separator: A string to be placed between inline fields to keep them
  *       visually distinct.
  */
-function template_preprocess_mixitup_views_view_mixitup(&$variables) {
+function template_preprocess_mixitup_views_view_mixitup(array &$variables) {
   $mixitup_func = \Drupal::service('mixitup_views.func_service');
   // Run preprocess function for unformatted style.
   template_preprocess_views_view_unformatted($variables);
@@ -33,7 +33,7 @@ function template_preprocess_mixitup_views_view_mixitup(&$variables) {
     $style = $view->style_plugin;
     $options = $style->options;
     // Pulls sorts data.
-    $sort_keys = array();
+    $sort_keys = [];
     if (isset($options['use_sort']) && $options['use_sort'] == 1 && isset($options['sorts'])) {
       foreach ($options['sorts'] as $sort_item => $label) {
         if (empty($label)) {
@@ -87,25 +87,25 @@ function template_preprocess_mixitup_views_view_mixitup(&$variables) {
  * @return array
  *   Returns MixitUp settings array.
  */
-function mixitup_views_get_settings($container, $options = array()) {
+function mixitup_views_get_settings($container, array $options = []) {
   $mixitup_func = \Drupal::service('mixitup_views.func_service');
   if (!empty($container)) {
     // For any options not specified, use default options.
     $options += $mixitup_func->getDefaultOptions(TRUE);
     // Set of mixitup settings.
-    $mixitup_settings = array(
-      'mixitup' => array(
-        $container => array(
-          'selectors' => array(
+    $mixitup_settings = [
+      'mixitup' => [
+        $container => [
+          'selectors' => [
             'target' => $options['selectors_target'],
             'filter' => $options['selectors_filter'],
             'sort' => $options['selectors_sort'],
-          ),
-          'load' => array(
+          ],
+          'load' => [
             'filter' => $options['load_filter'],
             'sort' => $options['load_sort'],
-          ),
-          'animation' => array(
+          ],
+          'animation' => [
             'enable' => (bool) $options['animation_enable'],
             'effects' => $options['animation_effects'],
             'duration' => (int) $options['animation_duration'],
@@ -114,12 +114,12 @@ function mixitup_views_get_settings($container, $options = array()) {
             'perspectiveOrigin' => $options['animation_perspectiveOrigin'],
             'queue' => (bool) $options['animation_queue'],
             'queueLimit' => (int) $options['animation_queueLimit'],
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
       'filters_form_id' => '#mixitup-views-filters-form',
       'reset_id' => '#reset',
-    );
+    ];
 
     return $mixitup_settings;
   }

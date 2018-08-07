@@ -1,14 +1,8 @@
 <?php
 
-/**
- * @file
- * Definition of Drupal\mixitup_views\Plugin\views\style\MixItUp.
- */
-
 namespace Drupal\mixitup_views\Plugin\views\style;
 
 use Drupal\views\Plugin\views\style\StylePluginBase;
-use Drupal\Core\Annotation\Plugin;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\taxonomy\Entity\Vocabulary;
@@ -32,6 +26,8 @@ class MixItUp extends StylePluginBase {
 
   /**
    * Overrides Drupal\views\Plugin\Plugin::$usesOptions.
+   *
+   * @var bool
    */
   protected $usesOptions = TRUE;
 
@@ -51,10 +47,14 @@ class MixItUp extends StylePluginBase {
 
   /**
    * Mixitup service.
+   *
+   * @var object|null
    */
   protected $mixitupFuncService;
   /**
    * Default options.
+   *
+   * @var array
    */
   protected $defaultOptions;
 
@@ -89,10 +89,10 @@ class MixItUp extends StylePluginBase {
     // Get the default options.
     $default_options = $this->defaultOptions;
     foreach ($default_options as $option => $default_value) {
-      $options[$option] = array(
+      $options[$option] = [
         'default' => $default_value,
-      );
-      if (is_int($default_value)) {
+      ];
+      if (\is_int($default_value)) {
         $options[$option]['bool'] = TRUE;
       }
     }
@@ -106,164 +106,166 @@ class MixItUp extends StylePluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
     // Add Mixitup options to views form.
-    $form['mixitup'] = array(
+    $form['mixitup'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('MixItUp Animation settings'),
-    );
+    ];
     if ($this->mixitupFuncService->isMixitupInstalled()) {
       $options = $this->options;
-      $form['animation_enable'] = array(
+      $form['animation_enable'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Enable Animation'),
         '#default_value' => $options['animation_enable'],
-        '#attributes' => array(
-          'class' => array('animation_enable'),
-        ),
-      );
-      $form['animation_effects'] = array(
+        '#attributes' => [
+          'class' => ['animation_enable'],
+        ],
+      ];
+      $form['animation_effects'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Effects'),
         '#description' => $this->t('The effects for all filter operations as a space-separated string.'),
         '#default_value' => $options['animation_effects'],
-      );
-      $form['animation_duration'] = array(
+      ];
+      $form['animation_duration'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Duration'),
         '#description' => $this->t('The duration of the animation in milliseconds.'),
         '#default_value' => $options['animation_duration'],
-      );
-      $form['animation_easing'] = array(
+      ];
+      $form['animation_easing'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Easing'),
         '#description' => $this->t('For a full list of accepted values, check out easings.net.'),
         '#default_value' => $options['animation_easing'],
-      );
-      $form['animation_perspectiveDistance'] = array(
+      ];
+      $form['animation_perspectiveDistance'] = [
         '#type' => 'textfield',
         '#title' => $this->t('perspectiveDistance'),
         '#description' => $this->t('The perspective value in CSS units applied to the container during animations.'),
         '#default_value' => $options['animation_perspectiveDistance'],
-      );
-      $form['animation_perspectiveOrigin'] = array(
+      ];
+      $form['animation_perspectiveOrigin'] = [
         '#type' => 'textfield',
         '#title' => $this->t('perspectiveOrigin'),
         '#description' => $this->t('The perspective-origin value applied to the container during animations.'),
         '#default_value' => $options['animation_perspectiveOrigin'],
-      );
-      $form['animation_queue'] = array(
+      ];
+      $form['animation_queue'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Queue'),
         '#description' => $this->t('Enable queuing for all operations received while an another operation is in progress.'),
         '#default_value' => $options['animation_queue'],
-        '#attributes' => array('class' => array('animation_queue')),
-      );
-      $form['animation_queueLimit'] = array(
+        '#attributes' => ['class' => ['animation_queue']],
+      ];
+      $form['animation_queueLimit'] = [
         '#type' => 'textfield',
         '#title' => $this->t('queueLimit'),
         '#description' => $this->t('The maximum number of operations allowed in the queue at any time.'),
         '#default_value' => $options['animation_queueLimit'],
-      );
+      ];
 
       foreach ($this->defaultOptions as $option => $default_value) {
         $form[$option]['#fieldset'] = 'mixitup';
         if ($option != 'animation_enable') {
-          $selectors['.animation_enable'] = array('checked' => TRUE);
+          $selectors['.animation_enable'] = ['checked' => TRUE];
           if ($option == 'animation_queueLimit') {
-            $selectors['.animation_queue'] = array('checked' => TRUE);
+            $selectors['.animation_queue'] = ['checked' => TRUE];
           }
-          $form[$option]['#states'] = array(
+          $form[$option]['#states'] = [
             'visible' => $selectors,
-          );
+          ];
         }
       }
       $sorts = $this->view->displayHandlers->get($this->view->current_display)->getOption('sorts');
-      $form['mixitup_sorting_settings'] = array(
+      $form['mixitup_sorting_settings'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('MixItUp Sorting settings'),
-      );
-      $form['use_sort'] = array(
+      ];
+      $form['use_sort'] = [
         '#type' => 'checkbox',
         '#fieldset' => 'mixitup_sorting_settings',
         '#title' => $this->t('Use sorting.'),
         '#description' => $this->t('If you want to add new Sort criteria, add them under views "Sort criteria", at first.'),
         '#default_value' => $options['use_sort'],
-        '#attributes' => array(
-          'class' => array('use_sort'),
-        ),
-      );
+        '#attributes' => [
+          'class' => ['use_sort'],
+        ],
+      ];
       if ($sorts) {
-        $form['sorts'] = array(
+        $form['sorts'] = [
           '#type' => 'div',
           '#fieldset' => 'mixitup_sorting_settings',
-        );
+        ];
         foreach ($sorts as $id => $sort) {
           $sort_id = $sort['table'] . '_' . $sort['field'];
-          $form['sorts'][$sort_id] = array(
-            '#type' => 'textfield',
-            '#title' => $this->t('Label for "!f"', array('!f' => $id)),
-            '#description' => $this->t("If you don't want to use it, just make this field empty."),
-            '#default_value' => isset($options['sorts'][$sort_id]) ? $options['sorts'][$sort_id] : '',
-            '#states' => array(
-              'visible' => array(
-                '.use_sort' => array('checked' => TRUE),
-              ),
-            ),
-          );
+          if (isset($options)) {
+            $form['sorts'][$sort_id] = [
+              '#type' => 'textfield',
+              '#title' => $this->t('Label for "!f"', ['!f' => $id]),
+              '#description' => $this->t("If you don't want to use it, just make this field empty."),
+              '#default_value' => $options['sorts'][$sort_id] ?? '',
+              '#states' => [
+                'visible' => [
+                  '.use_sort' => ['checked' => TRUE],
+                ],
+              ],
+            ];
+          }
         }
       }
 
-      $form['mixitup_vocab'] = array(
+      $form['mixitup_vocab'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('MixItUp Vocabulary settings'),
-      );
-      $form['restrict_vocab'] = array(
+      ];
+      $form['restrict_vocab'] = [
         '#type' => 'checkbox',
         '#fieldset' => 'mixitup_vocab',
         '#title' => $this->t('Restrict terms to particular vocabulary.'),
         '#default_value' => $options['restrict_vocab'],
-        '#attributes' => array(
-          'class' => array('restrict_vocab_enable'),
-        ),
-      );
+        '#attributes' => [
+          'class' => ['restrict_vocab_enable'],
+        ],
+      ];
       // Load all vocabularies.
       $all_vocabs = Vocabulary::loadMultiple();
 
-      $vocabulary_options = array();
+      $vocabulary_options = [];
       foreach ($all_vocabs as $key_vid => $vocab) {
         $vocabulary_options[$key_vid] = $vocab->get('name');
       }
 
-      $form['restrict_vocab_ids'] = array(
+      $form['restrict_vocab_ids'] = [
         '#type' => 'select',
         '#fieldset' => 'mixitup_vocab',
         '#title' => $this->t('Select vocabularies'),
         '#multiple' => TRUE,
         '#options' => $vocabulary_options,
         '#default_value' => $options['restrict_vocab_ids'],
-        '#states' => array(
-          'visible' => array(
-            '.restrict_vocab_enable' => array('checked' => TRUE),
-          ),
-        ),
-      );
+        '#states' => [
+          'visible' => [
+            '.restrict_vocab_enable' => ['checked' => TRUE],
+          ],
+        ],
+      ];
     }
     else {
       $url = Url::fromUri('https://github.com/patrickkunka/mixitup');
       $mixitup_link = \Drupal::l($this->t('MixItUp'), $url);
-      $url_readme = Url::fromUri('base:admin/help/mixitup_views', array(
+      $url_readme = Url::fromUri('base:admin/help/mixitup_views', [
         'absolute' => TRUE,
-        'attributes' => array('target' => '_blank'),
-      ));
+        'attributes' => ['target' => '_blank'],
+      ]);
       $readme_link = \Drupal::l($this->t('README'), $url_readme);
       // Disable Mixitup.
-      $form['mixitup_disabled'] = array(
+      $form['mixitup_disabled'] = [
         '#markup' => $this->t('Please, download !mixitup plugin to mixitup_views/js
-         directory. For more information read !read. After that, you can use it.', array(
-          '!mixitup' => $mixitup_link,
-          '!read' => $readme_link,
-        )),
+         directory. For more information read !read. After that, you can use it.', [
+           '!mixitup' => $mixitup_link,
+           '!read' => $readme_link,
+         ]),
         '#fieldset' => 'mixitup',
-      );
+      ];
     }
   }
 
