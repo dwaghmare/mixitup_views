@@ -211,7 +211,7 @@ class MixItUp extends StylePluginBase {
           if (isset($options)) {
             $form['sorts'][$sort_id] = [
               '#type' => 'textfield',
-              '#title' => $this->t('Label for "!f"', ['!f' => $id]),
+              '#title' => $this->t('Label for "@f"', ['@f' => $id]),
               '#description' => $this->t("If you don't want to use it, just make this field empty."),
               '#default_value' => $options['sorts'][$sort_id] ?? '',
               '#states' => [
