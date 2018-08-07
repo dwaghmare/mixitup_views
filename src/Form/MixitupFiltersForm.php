@@ -70,13 +70,30 @@ class MixitupFiltersForm extends FormBase {
         $vocab = Vocabulary::load($vid);
         if ($vocab !== NULL) {
           $name = $vocab->get('name');
-          $form['filter_' . $vid] = [
-            '#type' => 'checkboxes',
-            '#title' => $name,
-            '#options' => $terms,
-            '#attributes' => ['class' => ['mixitup_views_filter'], 'vid' => $vid],
-            '#multiple' => TRUE,
-          ];
+
+          if (isset($options['filter_type'])) {
+            switch ($options['filter_type']) {
+              case 'checkboxes':
+                $form['filter_' . $vid] = [
+                  '#type' => 'checkboxes',
+                  '#title' => $name,
+                  '#options' => $terms,
+                  '#attributes' => ['class' => ['mixitup_views_filter'], 'vid' => $vid],
+                  '#multiple' => TRUE,
+                ];
+                break;
+
+              case 'select':
+                $form['filter_' . $vid] = [
+                  '#type' => 'select',
+                  '#title' => $name,
+                  '#options' => ['' => $this->t('All')] + $terms,
+                  '#attributes' => ['class' => ['mixitup_views_filter'], 'vid' => $vid],
+                  '#multiple' => FALSE,
+                ];
+                break;
+            }
+          }
         }
       }
       if ($filters) {

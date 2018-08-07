@@ -112,6 +112,16 @@ class MixItUp extends StylePluginBase {
     ];
     if ($this->mixitupFuncService->isMixitupInstalled()) {
       $options = $this->options;
+      $form['filter_type'] = [
+        '#type' => 'select',
+        '#title' => t('Type of filtering'),
+        '#options' => [
+          'checkboxes' => t('Checkboxes'),
+          'select' => t('Selectboxes'),
+        ],
+        '#default_value' => $options['filter_type'],
+        '#description' => t('Select the preferred field type for filtering'),
+      ];
       $form['animation_enable'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Enable Animation'),

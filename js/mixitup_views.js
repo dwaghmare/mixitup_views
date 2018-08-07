@@ -13,7 +13,8 @@
         var $container = $(container);
         var $filters = $(drupalSettings.filters_form_id);
         var $reset = $(drupalSettings.reset_id);
-        checkboxFilter.init($filters, $reset, $container);
+        var $widget_type = drupalSettings.filtering_type;
+        filterObject.init($filters, $reset, $container,$widget_type);
         $container.mixItUp(settings);
         // Sorting functionality.
         $('.sort', $container).on('click', function () {
@@ -38,27 +39,44 @@
     }
   };
 
-  var checkboxFilter = {
+  var filterObject = {
     // Declare any variables we will need as properties of the object.
     $filters: null,
     $reset: null,
     groups: [],
     outputArray: [],
     outputString: '',
-    init: function (filters, reset, container) {
+    widgetType : '',
+    init: function (filters, reset, container,widget_type) {
       var self = this;
-
+      self.widgetType = widget_type;
       self.$filters = filters;
       self.$reset = reset;
       self.$container = container;
 
-      self.$filters.find('.form-type-checkbox').each(function () {
-        self.groups.push({
-          $inputs: $(this).find('input'),
-          active: [],
-          tracker: false
-        });
-      });
+      switch(self.widgetType) {
+        case 'checkboxes' :
+          self.$filters.find('.form-type-checkbox').each(function () {
+            self.groups.push({
+              $inputs: $(this).find('input'),
+              active: [],
+              tracker: false
+            });
+          });
+          break;
+        case 'select' :
+          self.$filters.find('.form-type-select').each(function () {
+            self.groups.push({
+              $selects: $(this).find('select'),
+              active: [],
+              tracker: false
+            });
+          });
+          break;
+      }
+
+
+      //}
 
       self.bindHandlers();
     },
@@ -86,15 +104,26 @@
       for (var i = 0, group; group = self.groups[i]; i++) {
         // Reset arrays.
         group.active = [];
-        group.$inputs.each(function () {
-          $(this).is(':checked') && group.active.push(this.value);
-        });
+
+        switch(self.widgetType) {
+          case 'checkboxes':
+            group.$inputs.each(function () {
+              $(this).is(':checked') && group.active.push(this.value);
+            });
+            break;
+          case 'select':
+            group.$selects.each(function () {
+              group.active.push(this.value);
+            });
+            break;
+        }
+
         group.active.length && (group.tracker = 0);
         if (group.active.length) {
           filters = true;
         }
       }
-      if (filters) {
+      if (filters && self.widgetType === 'checkboxes') {
         self.$reset.show();
       }
       else {
