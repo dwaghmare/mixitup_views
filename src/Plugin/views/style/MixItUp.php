@@ -258,6 +258,22 @@ class MixItUp extends StylePluginBase {
           ],
         ],
       ];
+
+      $form['filters_settings'] = [
+        '#type' => 'fieldset',
+        '#title' => $this->t('MixItUp Filters settings'),
+      ];
+
+      $form['hide_unchecked_chekboxes'] = [
+        '#type' => 'checkbox',
+        '#fieldset' => 'filters_settings',
+        '#title' => $this->t('Hide unchecked checkboxes if one of items selected.'),
+        '#description' => $this->t('If you want to hide other filters if you selected one of them, please check checkbox above.'),
+        '#default_value' => $options['hide_unchecked_chekboxes'],
+        '#attributes' => [
+          'class' => ['hide_unchecked_chekboxes'],
+        ],
+      ];
     }
     else {
       $url = Url::fromUri('https://github.com/patrickkunka/mixitup');

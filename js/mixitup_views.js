@@ -36,6 +36,17 @@
         });
 
       });
+
+      if (drupalSettings.mixitup_views_filters.hide_unchecked_checkboxes === true) {
+        $('.mixitup_views_filter.form-checkbox').once().on('change', function () {
+           if ($(this).prop("checked")) {
+             $(this).parent().siblings().animate({left:'0px', show: 'toggle'}, 150);
+           }
+           else {
+             $(this).parent().siblings().animate({right:'0px', show: 'toggle'}, 150);
+           }
+        });
+      }
     }
   };
 
@@ -45,6 +56,7 @@
     $reset: null,
     groups: [],
     outputArray: [],
+    checkboxes: null,
     outputString: '',
     widgetType : '',
     init: function (filters, reset, container,widget_type) {
@@ -53,6 +65,7 @@
       self.$filters = filters;
       self.$reset = reset;
       self.$container = container;
+      self.checkboxes =  $('.mixitup_views_filter.form-checkbox');
 
       switch(self.widgetType) {
         case 'checkboxes' :
@@ -91,6 +104,7 @@
       self.$reset.on('click', function (e) {
         e.preventDefault();
         self.$filters[0].reset();
+        self.checkboxes.parent().siblings().show();
         self.parseFilters();
 
       });

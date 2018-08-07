@@ -110,6 +110,13 @@ class MixitupFiltersForm extends FormBase {
       ];
     }
 
+    if (isset($options['hide_unchecked_chekboxes']) && $options['hide_unchecked_chekboxes'] === 1) {
+      $form['#attached']['drupalSettings']['mixitup_views_filters']['hide_unchecked_checkboxes'] = TRUE;
+    }
+    else {
+      $form['#attached']['drupalSettings']['mixitup_views_filters']['hide_unchecked_checkboxes'] = FALSE;
+    }
+
     return $form;
   }
 
