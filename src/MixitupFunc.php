@@ -175,7 +175,7 @@ class MixitupFunc {
    *   True or False.
    */
   public function isMixitupInstalled() {
-    if (is_file(drupal_get_path('module', 'mixitup_views') . '/js/jquery.mixitup.min.js')) {
+    if (is_file('libraries/mixitup/dist/mixitup.min.js')) {
       return TRUE;
     }
     return FALSE;
