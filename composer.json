@@ -5,24 +5,19 @@
   "license": "GPL-2.0",
   "type": "drupal-module",
   "require": {
-    "patrickkunka/mixitup": "v3"
+    "patrickkunka/mixitup": "v3.3.0"
   },
-  "repositories" : [
+  "repositories": [
     {
-      "type": "composer",
-      "url": "https://packages.drupal.org/8"
-    },
-    {
-      "type"    : "package",
-      "package" : {
-        "name"    : "patrickkunka/mixitup",
-        "version" : "v3",
-        "type"    : "drupal-library",
-        "source"  : {
-          "url"       : "https://github.com/patrickkunka/mixitup.git",
-          "type"      : "git",
-          "reference" : "origin/v3"
-        }
+      "type": "package",
+      "package": {
+        "name": "patrickkunka/mixitup",
+        "version": "v3.3.0",
+        "dist": {
+          "url": "https://github.com/patrickkunka/mixitup/archive/v3.3.0.zip",
+          "type": "zip"
+        },
+        "type": "drupal-library"
       }
     }
   ]
