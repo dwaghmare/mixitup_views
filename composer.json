@@ -1,0 +1,32 @@
+{
+  "name": "drupal/mixitup_views",
+  "description": "Creates Mixitup style plugin for Views",
+  "minimum-stability": "dev",
+  "license": "GPL-2.0",
+  "require": {
+    "patrickkunka/mixitup": "v3"
+  },
+  "repositories" : [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    },
+    {
+      "type"    : "package",
+      "package" : {
+        "name"    : "patrickkunka/mixitup",
+        "version" : "v3",
+        "type"    : "drupal-library",
+        "dist"    : {
+          "url"  : "https://github.com/patrickkunka/mixitup.git",
+          "type" : "drupal-library"
+        },
+        "source"  : {
+          "url"       : "https://github.com/patrickkunka/mixitup.git",
+          "type"      : "git",
+          "reference" : "origin/v3"
+        }
+      }
+    }
+  ]
+}

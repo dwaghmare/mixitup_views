@@ -4,7 +4,7 @@
  */
 
 html.js .mix_item.mix {
-  display: none;
+  display: inline-block;
 }
 
 .filters_wrapper {
@@ -42,4 +42,8 @@ html.js .sort_wrapper .sort.asc:after {
 }
 html.js .sort_wrapper .sort.desc:after {
   content: "⬇";
+}
+
+html div[id^="MixItUp"] {
+  padding-bottom: 20px;
 }

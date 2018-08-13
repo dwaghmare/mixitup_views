@@ -94,12 +94,12 @@ function mixitup_views_get_settings($container, array $options = []) {
     $options += $mixitup_func->getDefaultOptions(TRUE);
     // Set of mixitup settings.
     $mixitup_settings = [
-      'mixitup' => [
+      'mixitup_settings_array' => [
+        'selector_name' => $container,
         $container => [
           'selectors' => [
             'target' => $options['selectors_target'],
-            'filter' => $options['selectors_filter'],
-            'sort' => $options['selectors_sort'],
+            'control' => '[data-mixitup-control]',
           ],
           'load' => [
             'filter' => $options['load_filter'],

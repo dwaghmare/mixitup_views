@@ -11,4 +11,5 @@ mixitup-views:
   dependencies:
     - core/jquery
     - core/drupalSettings
+    - core/jquery.once
     - mixitup_views/mixitup
