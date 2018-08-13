@@ -4,23 +4,28 @@
   "minimum-stability": "dev",
   "license": "GPL-2.0+",
   "type": "drupal-module",
-  "require": {
-    "patrickkunka/mixitup": "v3.3.0"
-  },
-  "repositories": [
-    {
+  "repositories":
+  {
+    "drupal": {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    },
+    "patrickkunka": {
       "type": "package",
       "package": {
         "name": "patrickkunka/mixitup",
         "version": "v3.3.0",
+        "type": "drupal-library",
         "dist": {
           "url": "https://github.com/patrickkunka/mixitup/archive/v3.3.0.zip",
           "type": "zip"
-        },
-        "type": "drupal-library"
+        }
       }
     }
-  ],
+  },
+  "require": {
+    "patrickkunka/mixitup": "v3.3.0"
+  },
   "homepage": "https://drupal.org/project/mixitup_views",
   "authors": [
     {
@@ -33,10 +38,5 @@
     "issues": "https://drupal.org/project/issues/mixitup_views",
     "irc": "irc://irc.freenode.org/drupal-contribute",
     "source": "https://cgit.drupalcode.org/mixitup_views"
-  },
-  "extra": {
-    "installer-paths": {
-      "../../../libraries/{$name}": ["type:drupal-library"]
-    }
   }
 }
