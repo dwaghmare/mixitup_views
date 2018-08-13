@@ -2,7 +2,7 @@
   "name": "drupal/mixitup_views",
   "description": "Creates Mixitup style plugin for Views",
   "minimum-stability": "dev",
-  "license": "GPL-2.0",
+  "license": "GPL-2.0+",
   "type": "drupal-module",
   "require": {
     "patrickkunka/mixitup": "v3.3.0"
@@ -20,5 +20,23 @@
         "type": "drupal-library"
       }
     }
-  ]
+  ],
+  "homepage": "https://drupal.org/project/mixitup_views",
+  "authors": [
+    {
+      "name": "Alexander Ivanchenko (oleksandr-ivanchenko)",
+      "homepage": "https://www.drupal.org/u/oleksandr-ivanchenko",
+      "role": "Author"
+    }
+  ],
+  "support": {
+    "issues": "https://drupal.org/project/issues/mixitup_views",
+    "irc": "irc://irc.freenode.org/drupal-contribute",
+    "source": "https://cgit.drupalcode.org/mixitup_views"
+  },
+  "extra": {
+    "installer-paths": {
+      "../../../libraries/{$name}": ["type:drupal-library"]
+    }
+  }
 }
