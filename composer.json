@@ -12,14 +12,16 @@
         "type": "drupal-library",
         "version": "v3.3.0",
         "dist": {
-          "url": "https://github.com/patrickkunka/mixitup/archive/v3.2.2.zip",
+          "url": "https://github.com/patrickkunka/mixitup/archive/v3.3.0.zip",
           "type": "zip"
         }
       }
     }
   ],
   "require": {
-    "patrickkunka/mixitup": "v3.3.0"
+    "patrickkunka/mixitup": "v3.3.0",
+    "composer/installers": "^1.2",
+    "oomphinc/composer-installers-extender": "^1.1"
   },
   "homepage": "https://drupal.org/project/mixitup_views",
   "authors": [
@@ -33,5 +35,14 @@
     "issues": "https://drupal.org/project/issues/mixitup_views",
     "irc": "irc://irc.freenode.org/drupal-contribute",
     "source": "https://cgit.drupalcode.org/mixitup_views"
+  },
+  "extra": {
+    "installer-types": ["library"],
+    "installer-paths": {
+      "libraries/{$name}": [
+        "type:drupal-library",
+        "patrickkunka/mixitup"
+      ]
+    }
   }
 }
