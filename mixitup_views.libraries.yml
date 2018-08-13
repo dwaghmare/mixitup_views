@@ -1,6 +1,6 @@
 mixitup:
   js:
-    js/jquery.mixitup.min.js: {}
+    ../../../libraries/mixitup/dist/mixitup.min.js: {}
 mixitup-views:
   version: 1.x
   css:

@@ -4,32 +4,27 @@
   "minimum-stability": "dev",
   "license": "GPL-2.0+",
   "type": "drupal-module",
-  "repositories":
-  {
-    "drupal": {
-      "type": "composer",
-      "url": "https://packages.drupal.org/8"
-    },
-    "patrickkunka": {
+  "repositories": [
+    {
       "type": "package",
       "package": {
         "name": "patrickkunka/mixitup",
-        "version": "v3.3.0",
         "type": "drupal-library",
+        "version": "v3.3.0",
         "dist": {
-          "url": "https://github.com/patrickkunka/mixitup/archive/v3.3.0.zip",
+          "url": "https://github.com/patrickkunka/mixitup/archive/v3.2.2.zip",
           "type": "zip"
         }
       }
     }
-  },
+  ],
   "require": {
     "patrickkunka/mixitup": "v3.3.0"
   },
   "homepage": "https://drupal.org/project/mixitup_views",
   "authors": [
     {
-      "name": "Alexander Ivanchenko (oleksandr-ivanchenko)",
+      "name": "Oleksander Ivanchenko (oleksandr-ivanchenko)",
       "homepage": "https://www.drupal.org/u/oleksandr-ivanchenko",
       "role": "Author"
     }
