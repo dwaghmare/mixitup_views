@@ -13,11 +13,31 @@ MixItUp plugin requires jQuery v1.7 or greater.
 
 INSTALLATION:
 -------------
+For Drupal composer version:
+1. Add this module to your project using composer command:
+For stable version:
+composer require 'drupal/mixitup_views:^1.0'
+
+For development version:
+composer require 'drupal/mixitup_views:1.x-dev'
+
+2. Copy mixitup library from vendor/patrickkunka to your
+   libraries directory, default location web/libraries
+3. Enable the module.
+------------------------------------------------
+For Drupal zip version:
+
 1. Download MixItUp Views module.
-2. Download MixItUp plugin jquery.mixitup.min.js from
-   https://mixitup.kunkalabs.com/ to mixitup_views/js directory.
+2. Download MixItUp plugin from
+   https://github.com/patrickkunka/mixitup/archive/v3.3.0.zip and extract its
+   data to your project libraries directory, location <webroot>/libraries
+   and rename the folder name to "mixitup"
 3. Enable MixItUp Views module.
    That's it :)
+
+Also, to manage libraries in your project, you can use the module:
+	Libraries API.
+Link: https://www.drupal.org/project/libraries
 
 CONFIGURATION:
 --------------
