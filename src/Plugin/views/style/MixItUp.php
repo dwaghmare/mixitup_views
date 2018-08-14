@@ -2,6 +2,7 @@
 
 namespace Drupal\mixitup_views\Plugin\views\style;
 
+use Drupal\Core\Link;
 use Drupal\views\Plugin\views\style\StylePluginBase;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -276,16 +277,16 @@ class MixItUp extends StylePluginBase {
       ];
     }
     else {
-      $url = Url::fromUri('https://github.com/patrickkunka/mixitup');
-      $mixitup_link = \Drupal::l($this->t('MixItUp'), $url);
+      $url = Url::fromUri('https://github.com/patrickkunka/mixitup/tree/v3');
+      $mixitup_link = Link::fromTextAndUrl($this->t('MixItUp'), $url);
       $url_readme = Url::fromUri('base:admin/help/mixitup_views', [
         'absolute' => TRUE,
         'attributes' => ['target' => '_blank'],
       ]);
-      $readme_link = \Drupal::l($this->t('README'), $url_readme);
+      $readme_link = Link::fromTextAndUrl($this->t('README'), $url_readme);
       // Disable Mixitup.
       $form['mixitup_disabled'] = [
-        '#markup' => $this->t('Please, download !mixitup plugin to mixitup_views/js
+        '#markup' => $this->t('Please, download !mixitup plugin to libraries/mixitup
          directory. For more information read !read. After that, you can use it.', [
            '!mixitup' => $mixitup_link,
            '!read' => $readme_link,
