@@ -9,6 +9,7 @@ mixitup-views:
   js:
     js/mixitup_views.js: {}
   dependencies:
+    - core/drupal
     - core/jquery
     - core/drupalSettings
     - core/jquery.once
