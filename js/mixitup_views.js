@@ -21,9 +21,11 @@
         checkboxes: null,
         outputString: '',
         widgetType : '',
-        init: function (filters, reset, container,widget_type) {
+        init: function (filters, reset, container,widget_type,agregation_type) {
           var self = this;
           self.widgetType = widget_type;
+          self.agregationType = agregation_type;
+          self.joinSeparator = (self.agregationType === 'or' ? ',' : '');
           self.$filters = filters;
           self.$reset = reset;
           self.$container = container;
@@ -65,7 +67,6 @@
             self.$filters[0].reset();
             self.checkboxes.parent().siblings().show();
             self.parseFilters();
-
           });
         },
         // The parseFilters method checks which filters are active in each group.
@@ -120,13 +121,19 @@
             return (done < self.groups.length);
           };
 
+          var unique = function(value,index,self) {
+            return self.indexOf(value) === index;
+          }
+
           var crawl = function () {
+            var cache = [];
             for (var i = 0, group; group = self.groups[i]; i++) {
-              group.active[group.tracker] && (cache += group.active[group.tracker]);
+              group.active[group.tracker] && (cache.push(group.active[group.tracker]));
 
               if (i === self.groups.length - 1) {
-                self.outputArray.push(cache);
-                cache = '';
+                cache = cache.filter(unique);
+                self.outputArray = self.outputArray.concat(cache);
+                cache = [];
                 updateTrackers();
               }
             }
@@ -154,7 +161,7 @@
           }
           while (!crawled && checkTrackers());
 
-          self.outputString = self.outputArray.join();
+          self.outputString = self.outputArray.join(self.joinSeparator);
 
           // If the output string is empty, show all rather than none.
           !self.outputString.length && (self.outputString = 'all');
@@ -174,7 +181,8 @@
         var $filters = $(drupalSettings.filters_form_id);
         var $reset = $(drupalSettings.reset_id);
         var $widget_type = drupalSettings.filtering_type;
-        filterObject.init($filters, $reset, $container, $widget_type);
+        var $agregation_type = drupalSettings.agregation_type;
+        filterObject.init($filters, $reset, $container, $widget_type, $agregation_type);
 
         // Sorting functionality.
         $('.sort', $container).on('click', function () {

@@ -120,6 +120,7 @@ function mixitup_views_get_settings($container, array $options = []) {
       'filters_form_id' => '#mixitup-views-filters-form',
       'reset_id' => '#reset',
       'filtering_type' => isset($options['filter_type']) ? $options['filter_type'] : 'checkboxes',
+      'agregation_type' => isset($options['agregation_type']) ? $options['agregation_type'] : 'and',
     ];
 
     return $mixitup_settings;

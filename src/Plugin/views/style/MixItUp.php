@@ -123,6 +123,16 @@ class MixItUp extends StylePluginBase {
         '#default_value' => $options['filter_type'],
         '#description' => t('Select the preferred field type for filtering'),
       ];
+      $form['agregation_type'] = [
+        '#type' => 'select',
+        '#title' => t('Agregation type'),
+        '#options' => [
+          'and' => t('AND'),
+          'or' => t('OR'),
+        ],
+        '#default_value' => $options['agregation_type'],
+        '#description' => t('The terms agregation type detects how to fetch nodes when multiple checkboxes selected.AND - node should have all of the terms to be selected, OR - one of them is enough.'),
+      ];
       $form['animation_enable'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Enable Animation'),
