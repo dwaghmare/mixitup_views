@@ -118,9 +118,11 @@ class MixitupFunc {
   public function populateFilters($tid, $nid) {
     $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
     /* @var \Drupal\taxonomy\Entity\Term $term */
-    $vid = $term->bundle();
-    self::$populatedFilters[$vid]['.tid_' . $tid] = $term->getName();
-    $this->populateNodeFilters($nid, $tid);
+    if (!empty($term)) {
+      $vid = $term->bundle();
+      self::$populatedFilters[$vid]['.tid_' . $tid] = $term->getName();
+      $this->populateNodeFilters($nid, $tid);
+    }
   }
 
   /**
