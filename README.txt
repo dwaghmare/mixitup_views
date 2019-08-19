@@ -2,8 +2,8 @@
 * README: *
 ***********
 
-DESCRIPTION:
-------------
+INTRODUCTION:
+-------------
 This module implements ability to use MixItUp filtering and sorting for Views.
 Plugin page: https://mixitup.kunkalabs.com
 
@@ -18,6 +18,8 @@ For Drupal composer version:
 For stable version:
 composer require 'drupal/mixitup_views:^1.0'
 
+REQUIREMENTS:
+-------------
 For development version:
 composer require 'drupal/mixitup_views:1.x-dev'
 
