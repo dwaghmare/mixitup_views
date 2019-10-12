@@ -4,6 +4,7 @@ namespace Drupal\mixitup_views;
 
 use Drupal\Core\Entity\EntityTypeManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Database\Connection;
 
 /**
  * Performs assistance functionality.
@@ -38,16 +39,30 @@ class MixitupFunc {
   protected $entityTypeManager;
 
   /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $connection;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\mixitup_views\MixitupViewsDefaultOptionsService $defaultOptionsService
    *   MixitupViewsDefaultOptionsService service.
    * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManagerService
    *   EntityTypeManager service.
+   * @param \Drupal\Core\Database\Connection $connection
+   *   The database connection.
    */
-  public function __construct(MixitupViewsDefaultOptionsService $defaultOptionsService, EntityTypeManager $entityTypeManagerService) {
+  public function __construct(
+    MixitupViewsDefaultOptionsService $defaultOptionsService,
+    EntityTypeManager $entityTypeManagerService,
+    Connection $connection
+  ) {
     $this->defaultOptionsService = $defaultOptionsService;
     $this->entityTypeManager = $entityTypeManagerService;
+    $this->connection = $connection;
   }
 
   /**
@@ -56,7 +71,8 @@ class MixitupFunc {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('mixitup_views.default_options_service'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('database')
     );
   }
 
@@ -96,7 +112,7 @@ class MixitupFunc {
    *   Array of tids.
    */
   public function getNodeTids($nid) {
-    $tids = \Drupal::database()->select('taxonomy_index', 'ti')
+    $tids = $this->connection->select('taxonomy_index', 'ti')
       ->fields('ti', ['tid', 'nid'])
       ->condition('ti.nid', $nid)
       ->execute()->fetchAllKeyed();

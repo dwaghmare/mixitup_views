@@ -13,6 +13,11 @@ use Drupal\Tests\UnitTestCase;
  */
 class MixItUpDefaultOptionsServiceTest extends UnitTestCase {
 
+  /**
+   * The MixitupViewsDefaultOptionsService instance.
+   *
+   * @var \Drupal\mixitup_views\MixitupViewsDefaultOptionsService
+   */
   protected $unit;
 
   /**
