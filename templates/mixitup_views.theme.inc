@@ -25,7 +25,7 @@ function template_preprocess_mixitup_views_view_mixitup(array &$variables) {
   // Run preprocess function for unformatted style.
   template_preprocess_views_view_unformatted($variables);
   if (!$mixitup_func->isMixitupInstalled()) {
-    drupal_set_message(t('mixitup.min.js has not been found in libraries/mixitup/dist directory.'), 'error');
+    \Drupal::messenger()->addError(t('mixitup.min.js has not been found in libraries/mixitup/dist directory.'));
   }
   else {
     $view = $variables['view'];

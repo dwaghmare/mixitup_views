@@ -124,7 +124,7 @@ class MixitUpFiltersFormTest extends KernelTestBase {
     }
 
     // Adding test data to taxonomy_index table.
-    $taxonomy_index_query = db_insert('taxonomy_index')->fields([
+    $taxonomy_index_query = \Drupal::database()->insert('taxonomy_index')->fields([
       'nid',
       'tid',
       'status',

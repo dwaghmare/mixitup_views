@@ -96,7 +96,7 @@ class MixitupFunc {
    *   Array of tids.
    */
   public function getNodeTids($nid) {
-    $tids = db_select('taxonomy_index', 'ti')
+    $tids = \Drupal::database()->select('taxonomy_index', 'ti')
       ->fields('ti', ['tid', 'nid'])
       ->condition('ti.nid', $nid)
       ->execute()->fetchAllKeyed();
