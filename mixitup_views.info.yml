@@ -2,4 +2,5 @@ name: MixItUp Views
 type: module
 description: Creates Mixitup style plugin for Views
 core: 8.x
+core_version_requirement: ^8 || ^9
 package: Other
